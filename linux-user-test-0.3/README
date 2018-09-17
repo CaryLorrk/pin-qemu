@@ -1,0 +1,27 @@
+This directory contains the necessary libraries and executables to
+test the QEMU User Linux emulation.
+
+Edit the 'qemu-linux-user.sh' script to set the path to the QEMU
+version you want to test. Then type:
+
+make test
+
+to test the working targets.
+
+The test consists in launching a dynamically linked "ls -l" command.
+
+You can test a single target by specifying it as parameter to
+'qemu-linux-user.sh'.
+
+Source of the executables and libraries:
+
+- Debian cdrom installers (file initrd.gz) (hppa, x86_64, m68k, mips,
+  mipsel, arm, alpha, ppc, sparc)
+
+- Gentoo stage 1 (ppc64)
+
+- Statically linked programs for sparc64  (Thanx to Blue Swirl)
+
+- ...
+
+[Fabrice Bellard]

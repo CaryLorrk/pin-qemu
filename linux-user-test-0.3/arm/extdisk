@@ -1,0 +1,42 @@
+#!/bin/sh -e
+
+nr=1
+while [ -e /ext$nr ] ; do
+   nr=`expr $nr + 1`
+done
+
+ramdisk=/dev/ram$nr
+
+if [ $# = 2 ] ; then
+   echo Decompressing extension filesystem from $1 to $2, please wait...
+   zcat $1 > $2
+   ramdisk=$2
+   
+elif [ $# = 1 ] ; then
+   echo Decompressing extension filesystem from $1 to $ramdisk, please wait...
+   zcat $1 > $ramdisk
+   
+else
+   echo Trying the floppy drives, please wait...
+   zcat /dev/fd0 >$ramdisk || zcat /dev/fd1 >$ramdisk || (
+     echo "No compressed volume found in /dev/fd0 or /dev/fd1!"
+     echo "Usage: extdisk VOLUME RAMDEVICE"
+     echo "example: extdisk /mnt/pppoedisk.gz /dev/ram1"
+     exit 1
+   )
+fi
+
+echo Locating a new mount point...
+
+nr=1
+while [ -e /ext$nr ] ; do
+   nr=`expr $nr + 1`
+done
+
+mkdir /ext$nr
+
+mount $ramdisk /ext$nr
+if [ -x /ext$nr/autorun ] ; then
+   export EXTDIR=/ext$nr
+   /ext$nr/autorun setup
+fi

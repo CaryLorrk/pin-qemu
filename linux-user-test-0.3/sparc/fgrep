@@ -1,0 +1,57 @@
+#!/bin/sh
+
+case $0 in
+basename)
+	_fn=${1##*/}
+	echo ${_fn%%$2}
+	;;
+lilo|*/lilo)
+	if [ ! -x /target/sbin/lilo ];then
+		echo "You must mount your root filesystem under /target and the base system
+must be installed to be able to run lilo.  To mount your root
+filesystem use: \"mount <partition> /target\" where <partition> is the
+device name of the partition where your root filesystem is. Or use the
+\"Mount a Previously-Initialized Partition\" option in the
+installation system's main menu."
+		exit 1
+	fi
+	LD_LIBRARY_PATH=/target/lib:/target/usr/lib /target/sbin/lilo -r /target
+	;;
+emacs|*/emacs|vi|*/vi)
+	echo "Emacs and vi are available in Debian, but wouldn't fit on the
+installation floppies. Please type \"nano-tiny\" to invoke a tiny, but
+easy-to-learn editor. As soon as you have your system installed, you
+may install the \"emacs\" package, and/or the \"vim\" or \"nvi\"
+packages.  \"vim\" and \"nvi\" each provide a different version of
+\"vi\"."
+	exit 1
+	;;
+ae|*/ae)
+        echo "This filesystem provides \"nano-tiny\" rather than \"ae\" now.
+Please use that."
+        exit 1
+	;;
+mformat|*/mformat)
+	echo "mformat: lazybox no op"
+	;;
+man|*/man)
+	echo "No manual pages are available on the Rescue Disk.  To read manual
+pages, reboot into your system when installation is done, and install
+the \"man-db\" package.  You can do this by running:
+
+    apt-get install man-db"
+	;;
+fgrep|*/fgrep)
+        grep "$@"
+        ;;
+fuser|*/fuser)
+        # no op, needed by pcmcia
+        ;;
+netstat|*/netstat)
+        # no op, needed by pcmcia
+        ;;
+*)
+	echo "no function defined for $0"
+	exit 1
+esac
+exit 0
